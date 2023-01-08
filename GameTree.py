@@ -8,13 +8,13 @@ class Node:
     def __init__(self, game_table):
         self.game_table = game_table
         self.children = [None for i in range(game_table.width)]
-        #статистика
+        self.init_children = False
+        
+        #statistic
         self.win = 0
         self.lose = 0
         self.draw = 0
-        self.init_children = False
-    
-
+        
 class GameTree:
     def __init__(self, width, height, line_win, our_player, deep_force = 2, playout= 1000,
                    only_ness_playout= True, dinamic_deep= True, max_deep = 4 , seed= 42  ):
@@ -59,10 +59,8 @@ class GameTree:
 
     def simulate(self, Nodee):
         """
-        програть партию из Nodee
-        1 - победил наш игрок
-        0 - ничья
-        -1 - победил противник
+        simulate game from Nodee
+        return 1 if win, 0 if draw, -1 if lose
         """
 
         flag = Nodee.game_table.status()
@@ -70,7 +68,7 @@ class GameTree:
             if flag == 0:
                 Nodee.draw += 1
                 return 0
-            if flag == self.our_player:
+            elif flag == self.our_player:
                 Nodee.win += 1
                 return 1
             else:
@@ -87,9 +85,7 @@ class GameTree:
                 return -1
 
         urgent_move = Nodee.game_table.urgent_move()
-        
         pos_moves = Nodee.game_table.get_posibility_moves()
-        
         rand_move = random.choice(pos_moves)
         if urgent_move != -1:
             rand_move = urgent_move
@@ -105,6 +101,7 @@ class GameTree:
     def make_bot_move(self):
 
         def index(Nodee, all_playout):
+            #return index winrate of Nodee
             num_playout = Nodee.win + Nodee.lose + Nodee.draw
             if num_playout == 0:
                 return 0

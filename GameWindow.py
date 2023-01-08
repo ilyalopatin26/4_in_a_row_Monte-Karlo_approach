@@ -5,15 +5,21 @@ import math
 
 from GameTree import *
 
+
+
+#Game parameters, you can change them
+ROW_COUNT = 6
+COLUMN_COUNT = 7
+LINE_WIN = 4
+BOT_TURN = 1
+
+
 BLUE = (0,0,255)
 BLACK = (0,0,0)
 RED = (255,0,0)
 YELLOW = (255,255,0)
  
-ROW_COUNT = 6
-COLUMN_COUNT = 7
-LINE_WIN = 4
-BOT_TURN = 1
+
 
 SQUARESIZE = 100
  
