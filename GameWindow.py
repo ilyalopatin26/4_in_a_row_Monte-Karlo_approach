@@ -13,7 +13,7 @@ YELLOW = (255,255,0)
 ROW_COUNT = 6
 COLUMN_COUNT = 7
 LINE_WIN = 4
-BOT_TURN = 1
+BOT_TURN = 2
 
 SQUARESIZE = 100
  
@@ -25,7 +25,7 @@ size = (width, height)
 RADIUS = int(SQUARESIZE/2 - 5)
 screen = pygame.display.set_mode(size)
 
-mainT = GameTree(COLUMN_COUNT, ROW_COUNT, LINE_WIN, BOT_TURN)
+mainT = GameTree(COLUMN_COUNT, ROW_COUNT, LINE_WIN, BOT_TURN, playout=5, seed=26)
 
 def draw_board():
     for c in range(COLUMN_COUNT):
@@ -43,70 +43,61 @@ def draw_board():
 
 pygame.init()
 
-draw_board()
-pygame.display.update()
  
 myfont = pygame.font.SysFont("monospace", 75)
 
 game_over = False
 turn = 1
-flag_complete_bot_move = False
 
 while not game_over:
- 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             sys.exit()
- 
-        if event.type == pygame.MOUSEMOTION:
-            pygame.draw.rect(screen, BLACK, (0,0, width, SQUARESIZE))
-            posx = event.pos[0]
-            if turn != BOT_TURN:
-                if turn == 1:
-                    pygame.draw.circle(screen, RED, (posx, int(SQUARESIZE/2)), RADIUS)
-                else:
-                    pygame.draw.circle(screen, YELLOW, (posx, int(SQUARESIZE/2)), RADIUS)
+        
         draw_board()
         pygame.display.update()
  
         flag = mainT.cur_Node.game_table.status()
 
         if flag != -1:
+            draw_board()
+            pygame.display.update()
             if flag == 0:
                 label = myfont.render("Draw", 1, RED)
                 screen.blit(label, (40,10))
             else:
                 label = myfont.render("Player {} wins!!".format(flag), 1, RED)
                 screen.blit(label, (40,10))
+        
             game_over = True
             pygame.display.update()
-            pygame.time.wait(3000)
+            pygame.time.wait(5000)
 
-        if event.type == pygame.MOUSEBUTTONDOWN :
-            flag_complete_bot_move = False
-            pygame.draw.rect(screen, BLACK, (0,0, width, SQUARESIZE))
-            #print(event.pos)
-            # Ask for Player 1 Input
-            if turn !=  BOT_TURN:
+        if turn == BOT_TURN:
+            mes = myfont.render("Bot's turn", 1, RED)
+            screen.blit(mes, (40,10))
+            pygame.display.update()
+            mainT.make_bot_move()
+            turn = 3-turn
+    
+        else:
+            if event.type == pygame.MOUSEMOTION:
+                pygame.draw.rect(screen, BLACK, (0,0, width, SQUARESIZE))
+                posx = event.pos[0]
+                if turn != BOT_TURN:
+                    if turn == 1:
+                        pygame.draw.circle(screen, RED, (posx, int(SQUARESIZE/2)), RADIUS)
+                    else:
+                        pygame.draw.circle(screen, YELLOW, (posx, int(SQUARESIZE/2)), RADIUS)
+            draw_board()
+            pygame.display.update()
+
+            if event.type == pygame.MOUSEBUTTONDOWN :
+                flag_complete_bot_move = False
+                pygame.draw.rect(screen, BLACK, (0,0, width, SQUARESIZE))
                 posx = event.pos[0]
                 col = int(math.floor(posx/SQUARESIZE))
  
                 if mainT.cur_Node.game_table.check_posibility_move(col):
                     mainT.make_move(col)
-                    """
-                    if winning_move(board, 1):
-                        label = myfont.render("Player 1 wins!!", 1, RED)
-                        screen.blit(label, (40,10))
-                        game_over = True
-                    """
- 
-            # # Ask for Player 2 Input
-            else:               
-                mainT.make_bot_move()
-                flag_complete_bot_move = True
-            
-
-            turn = 3 - turn
-
-            if game_over:
-                pygame.time.wait(3000)
+                    turn = 3-turn
