@@ -5,15 +5,21 @@ import math
 
 from GameTree import *
 
+
+
+#Game parameters, you can change them
+ROW_COUNT = 6
+COLUMN_COUNT = 7
+LINE_WIN = 4
+BOT_TURN = 1
+
+
 BLUE = (0,0,255)
 BLACK = (0,0,0)
 RED = (255,0,0)
 YELLOW = (255,255,0)
  
-ROW_COUNT = 6
-COLUMN_COUNT = 7
-LINE_WIN = 4
-BOT_TURN = 2
+
 
 SQUARESIZE = 100
  
@@ -25,7 +31,7 @@ size = (width, height)
 RADIUS = int(SQUARESIZE/2 - 5)
 screen = pygame.display.set_mode(size)
 
-mainT = GameTree(COLUMN_COUNT, ROW_COUNT, LINE_WIN, BOT_TURN, playout=5, seed=26)
+mainT = GameTree(COLUMN_COUNT, ROW_COUNT, LINE_WIN, BOT_TURN)
 
 def draw_board():
     for c in range(COLUMN_COUNT):

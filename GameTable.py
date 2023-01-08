@@ -10,9 +10,7 @@ class GameTable :
         self.stack_move = []
 
     def check_posibility_move(self, num_line):
-        if len(self.table[num_line]) < self.height:
-            return True
-        return False
+        return bool(len(self.table[num_line]) < self.height)
     
     def get_posibility_moves(self):
         return [i for i in range(self.width) if self.check_posibility_move(i)]
@@ -31,7 +29,7 @@ class GameTable :
         self.cur_player = self.get_opponent()
     
     def check_win(self):
-        #проверка что последний ход был выигрышным
+        # check that last move is win
 
         def check_vertical():
             last_move = self.stack_move[-1]
@@ -45,7 +43,7 @@ class GameTable :
         def check_horizontal():
             last_move = self.stack_move[-1]
             top = len(self.table[last_move]) -1
-            #два указателя
+            #two pointer method
             left = last_move
             right = last_move
             while left > 0 and len(self.table[left-1]) > top:
@@ -61,7 +59,7 @@ class GameTable :
         def check_diagonal():
             last_move = self.stack_move[-1]
 
-            #диагональ вверх влево
+            #diagonal up to the left
             top = len(self.table[last_move]) -1
             left = last_move
             right = last_move
@@ -79,7 +77,7 @@ class GameTable :
             if right-left+1 >= self.line_win:
                 return True
             
-            #диагональ вверх вправо
+            #diagonal up to the left
             top = len(self.table[last_move]) -1
             left = last_move
             right = last_move
@@ -106,10 +104,12 @@ class GameTable :
         return bool(len(self.stack_move) == self.width * self.height)
     
     def status(self):
-        #-1 - игра продолжается
-        #0 - ничья
-        #1 - победил первый игрок
-        #2 - победил второй игрок
+        """
+        -1 - game is not over
+        0 - draw
+        1 - win first player
+        2 - win second player
+        """
         if self.check_win():
             return self.get_opponent()
         if self.check_draw():
@@ -133,8 +133,8 @@ class GameTable :
 
     def garanted_win(self, target_player, deep):
         """
-        проверка что игрок target_player может выиграть за deep своих ходов и 
-        любых ответах противника
+        check that the target_player can win for his moves and 
+        any answers of the opponent
         """
 
         flag = self.status()
@@ -165,11 +165,11 @@ class GameTable :
             
     def urgent_move(self):
         """
-        срочный ход -- ход который позволяет выиграть за один ход противнику, 
-        если мы сами его не сделаем
+        urgent move -- a move that allows you to win in one move for your opponent, 
+        if we don't make it ourselves.
 
-        возвращает -1 если такого хода нет
-        иначе возвращает номер столбца
+        returns -1 if there is no such move
+        Otherwise, it returns the column number
         """
 
         self.cur_player = self.get_opponent()
@@ -186,7 +186,7 @@ class GameTable :
     
     def get_np_array(self):
         """
-        возвращает numpy массив с игровым полем
+        returns a numpy array with the game table
         """
         np_array = np.zeros((self.height, self.width))
         for w in range(self.width):
