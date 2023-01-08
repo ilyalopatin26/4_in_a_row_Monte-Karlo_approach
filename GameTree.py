@@ -16,8 +16,8 @@ class Node:
     
 
 class GameTree:
-    def __init__(self, width, height, line_win, our_player, deep_force = 2, playout= 1500,
-                   only_ness_playout= True, dinamic_deep= True, max_deep = 4 , seed=42  ):
+    def __init__(self, width, height, line_win, our_player, deep_force = 2, playout= 500,
+                   only_ness_playout= True, dinamic_deep= True, max_deep = 4 , seed= 1  ):
         self.our_player = our_player
         self.dforce = deep_force
         self.playout = playout

@@ -1,3 +1,5 @@
+import numpy as np
+
 class GameTable :
     def __init__(self, width, height, line_win):
         self.width = width
@@ -181,3 +183,16 @@ class GameTable :
             self.undo_move()
         self.cur_player = self.get_opponent()
         return -1
+    
+    def get_np_array(self):
+        """
+        возвращает numpy массив с игровым полем
+        """
+        np_array = np.zeros((self.height, self.width))
+        for w in range(self.width):
+            for h in range(self.height):
+                if len(self.table[w]) > h:
+                    np_array[h][w] = self.table[w][h]
+                else:
+                    np_array[h][w] = 0
+        return np_array
