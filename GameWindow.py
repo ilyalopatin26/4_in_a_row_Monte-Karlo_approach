@@ -4,34 +4,20 @@ import sys
 import math
 
 from GameTree import *
-
-
-
-#Game parameters, you can change them
-ROW_COUNT = 6
-COLUMN_COUNT = 7
-LINE_WIN = 4
-BOT_TURN = 1
+from parametrs import *
 
 
 BLUE = (0,0,255)
 BLACK = (0,0,0)
 RED = (255,0,0)
 YELLOW = (255,255,0)
- 
-
-
-SQUARESIZE = 100
- 
 width = COLUMN_COUNT * SQUARESIZE
 height = (ROW_COUNT+1) * SQUARESIZE
- 
 size = (width, height)
- 
 RADIUS = int(SQUARESIZE/2 - 5)
-screen = pygame.display.set_mode(size)
 
-mainT = GameTree(COLUMN_COUNT, ROW_COUNT, LINE_WIN, BOT_TURN)
+screen = pygame.display.set_mode(size)
+mainT = GameTree(COLUMN_COUNT, ROW_COUNT, LINE_WIN, BOT_TURN, deep_force, playout, only_ness_playout, dinamic_deep, deep_force_max, seed)
 
 def draw_board():
     for c in range(COLUMN_COUNT):

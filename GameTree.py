@@ -16,8 +16,8 @@ class Node:
         self.draw = 0
         
 class GameTree:
-    def __init__(self, width, height, line_win, our_player, deep_force = 2, playout= 1000,
-                   only_ness_playout= True, dinamic_deep= True, max_deep = 4 , seed= 42  ):
+    def __init__(self, width, height, line_win, our_player, deep_force, playout,
+                   only_ness_playout, dinamic_deep, max_deep, seed ):
         self.our_player = our_player
         self.dforce = deep_force
         self.playout = playout
@@ -25,11 +25,14 @@ class GameTree:
         self.dinamic_deep = dinamic_deep
         self.max_deep = max_deep
         
-        self.dict_pos = {}
+        self.dicts_pos = [ {} for i in range(width*height+1) ]
         self.cur_Node = Node( GameTable(width, height, line_win) )
         
+        temp_tuple = self.cur_Node.game_table.get_GameTable_to_tuples()
+        self.dicts_pos[0][temp_tuple] = self.cur_Node
+
         random.seed(seed)
-        
+
     def init_children(self, Nodee):
         if Nodee.init_children:
             return
@@ -39,10 +42,10 @@ class GameTree:
             temp_GameTable = deepcopy(Nodee.game_table)
             temp_GameTable.make_move(move)
             temp_tuple = temp_GameTable.get_GameTable_to_tuples()
-            temp_Node = self.dict_pos.get(temp_tuple, None)
+            temp_Node = self.dicts_pos[len(temp_GameTable.stack_move)].get(temp_tuple)
             if not temp_Node :
                 Nodee.children[move] = Node(temp_GameTable)
-                self.dict_pos[temp_tuple] = Nodee.children[move]
+                self.dicts_pos[len(temp_GameTable.stack_move)][temp_tuple] = Nodee.children[move]
             else:
                 Nodee.children[move] = temp_Node
         
@@ -54,7 +57,7 @@ class GameTree:
         if self.dinamic_deep and self.dforce < self.max_deep:
             all_cell = self.cur_Node.game_table.width * self.cur_Node.game_table.height
             empty_cell = all_cell - len(self.cur_Node.game_table.stack_move)
-            if empty_cell <=  all_cell / 2**( self.dforce + 1 ):
+            if empty_cell <=  all_cell / 2**( self.dforce):
                 self.dforce += 1
 
     def simulate(self, Nodee):
@@ -76,7 +79,7 @@ class GameTree:
                 return -1
         self.init_children(Nodee)
 
-        if Nodee.game_table.garanted_win( Nodee.game_table.cur_player, 1 ):
+        if Nodee.game_table.guaranteed_win( Nodee.game_table.cur_player, 1 ):
             if Nodee.game_table.cur_player == self.our_player:
                 Nodee.win += 1
                 return 1
@@ -113,16 +116,16 @@ class GameTree:
         urgent_move = self.cur_Node.game_table.urgent_move()
         if len(pos_moves) == 1:
             self.make_move(pos_moves[0])
-            return
+            return pos_moves[0]
 
         for move in pos_moves:
-            if self.cur_Node.children[move].game_table.garanted_win(self.our_player, self.dforce):
+            if self.cur_Node.children[move].game_table.guaranteed_win(self.our_player, self.dforce):
                 self.make_move(move)
-                return
+                return move
         
         if urgent_move != -1:
             self.make_move(urgent_move)
-            return
+            return urgent_move
 
         all_playout = 0
         for move in pos_moves:
@@ -147,4 +150,5 @@ class GameTree:
                 best_move = move
 
         self.make_move(best_move)
+        return best_move
 

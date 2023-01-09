@@ -131,7 +131,7 @@ class GameTable :
     def get_GameTable_to_tuples(self):
         return tuple([tuple(i) for i in self.table])
 
-    def garanted_win(self, target_player, deep):
+    def guaranteed_win(self, target_player, deep):
         """
         check that the target_player can win for his moves and 
         any answers of the opponent
@@ -147,7 +147,7 @@ class GameTable :
         if self.cur_player == target_player:
             for move in pos_moves:
                 self.make_move(move)
-                if self.garanted_win(target_player, deep-1):
+                if self.guaranteed_win(target_player, deep-1):
                     self.undo_move()
                     return True
                 self.undo_move()
@@ -156,7 +156,7 @@ class GameTable :
             flag = True
             for move in pos_moves:
                 self.make_move(move)
-                if not self.garanted_win(target_player, deep):
+                if not self.guaranteed_win(target_player, deep):
                     self.undo_move()
                     flag = False
                     break
