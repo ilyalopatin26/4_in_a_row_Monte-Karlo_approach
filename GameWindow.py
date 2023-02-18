@@ -8,7 +8,7 @@ from parametrs import *
 
 
 BLUE = (0,0,255)
-BLACK = (0,0,0)
+BLACK = ( 0, 0 ,0)
 RED = (255,0,0)
 YELLOW = (255,255,0)
 width = COLUMN_COUNT * SQUARESIZE
@@ -33,6 +33,22 @@ def draw_board():
                 pygame.draw.circle(screen, YELLOW, (int(c*SQUARESIZE+SQUARESIZE/2), height-int(r*SQUARESIZE+SQUARESIZE/2)), RADIUS)
     pygame.display.update()
 
+def game_end():
+    flag = mainT.cur_Node.game_table.status()
+    pygame.draw.rect(screen, BLACK, (0,0, width, SQUARESIZE))
+    pygame.display.update()
+    draw_board()
+    pygame.display.update()
+    if flag == 0:
+        label = myfont.render("Draw", 1, RED)
+        screen.blit(label, (40,10))
+    else:
+        label = myfont.render( f'Player { flag } wins', 1, RED)
+        screen.blit(label, (40,10))
+    pygame.display.update()
+    pygame.time.wait(5000)
+    sys.exit()
+
 pygame.init()
 
  
@@ -52,18 +68,7 @@ while not game_over:
         flag = mainT.cur_Node.game_table.status()
 
         if flag != -1:
-            draw_board()
-            pygame.display.update()
-            if flag == 0:
-                label = myfont.render("Draw", 1, RED)
-                screen.blit(label, (40,10))
-            else:
-                label = myfont.render("Player {} wins!!".format(flag), 1, RED)
-                screen.blit(label, (40,10))
-        
-            game_over = True
-            pygame.display.update()
-            pygame.time.wait(5000)
+            game_end()
 
         if turn == BOT_TURN:
             mes = myfont.render("Bot's turn", 1, RED)
@@ -71,6 +76,8 @@ while not game_over:
             pygame.display.update()
             mainT.make_bot_move()
             turn = 3-turn
+            break
+
     
         else:
             if event.type == pygame.MOUSEMOTION:
@@ -93,3 +100,4 @@ while not game_over:
                 if mainT.cur_Node.game_table.check_posibility_move(col):
                     mainT.make_move(col)
                     turn = 3-turn
+            break
